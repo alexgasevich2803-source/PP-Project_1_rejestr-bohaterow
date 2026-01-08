@@ -14,6 +14,40 @@ typedef struct Hero {
     struct Hero* next;       //wskaźnik na następny element listy
 } Hero;
 
+//tworzenie nowego bohatera
+Hero* create_hero(const char* name, const char* race, const char* class, int level, int reputation, const char* status) {
+    Hero* new_hero = (Hero*)calloc(1, sizeof(Hero));
+    if (new_hero == NULL) {
+        printf("Błąd alokacji pamięci!\n");
+        return NULL;
+    }
+    strcpy(new_hero->name, name);
+    strcpy(new_hero->race, race);
+    strcpy(new_hero->class, class);
+    new_hero->level = level;
+    new_hero->reputation = reputation;
+    strcpy(new_hero->status, status);
+    new_hero->next = NULL;
+    return new_hero;
+}
+
+//dodanie bohatera na koniec listy
+Hero* push_back(Hero* head, const char* name, const char* race, const char* class, int level, int reputation, const char* status) {
+    Hero* new_hero = create_hero(name, race, class, level, reputation, status);
+    if (new_hero == NULL) return head;
+
+    if (head == NULL) {
+        return new_hero;
+    }
+
+    Hero* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = new_hero;
+    return head;
+}
+
 //menu
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
@@ -28,19 +62,39 @@ void menu() {
 int main() {
     Hero* head = NULL;
     int choice;
+    char name[100], race[50], class[50], status[50];
+    int level, reputation;
 
     printf("=== REJESTR BOHATERÓW GILDII ===\n");
-    printf("System rejestracji bohaterów!\n");
-    printf("Projekt...\n");
+    printf("System zarządzania bohaterami gildii\n");
     
     do {
         menu();
         scanf("%d", &choice);
-        getchar(); //usunięcie znaku nowej linii
+        getchar(); // usunięcie z naku nowej linii
 
         switch (choice) {
             case 1:
-                printf("...\n");
+                printf("Imię: ");
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
+                printf("Rasa: ");
+                fgets(race, sizeof(race), stdin);
+                race[strcspn(race, "\n")] = 0;
+                printf("Klasa: ");
+                fgets(class, sizeof(class), stdin);
+                class[strcspn(class, "\n")] = 0;
+                printf("Poziom: ");
+                scanf("%d", &level);
+                printf("Reputacja (0-100): ");
+                scanf("%d", &reputation);
+                getchar();
+                printf("Status (aktywny/na misji/ranny/zaginiony/zawieszony): ");
+                fgets(status, sizeof(status), stdin);
+                status[strcspn(status, "\n")] = 0;
+
+                head = push_back(head, name, race, class, level, reputation, status);
+                printf("Bohater dodany!\n");
                 break;
 
             case 2:
