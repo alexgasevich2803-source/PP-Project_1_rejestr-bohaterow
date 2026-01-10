@@ -48,6 +48,34 @@ Hero* push_back(Hero* head, const char* name, const char* race, const char* clas
     return head;
 }
 
+//wypisywanie wszystkich bohaterów
+void print_list(Hero* head) {
+    if (head == NULL) {
+        printf("Rejestr jest pusty.\n");
+        return;
+    }
+    printf("=== Rejestr Bohaterów ===\n");
+    Hero* temp = head;
+    while (temp != NULL) {
+        printf("Imię: %s | Rasa: %s | Klasa: %s | Poziom: %d | Reputacja: %d | Status: %s\n",
+               temp->name, temp->race, temp->class, temp->level, temp->reputation, temp->status);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+//wyszukiwanie bohatera po imieniu
+Hero* find_hero(Hero* head, const char* name) {
+    Hero* temp = head;
+    while (temp != NULL) {
+        if (strcmp(temp->name, name) == 0) {
+            return temp;
+        }
+        temp = temp->next;
+    }
+    return NULL;
+}
+
 //menu
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
@@ -66,7 +94,7 @@ int main() {
     int level, reputation;
 
     printf("=== REJESTR BOHATERÓW GILDII ===\n");
-    printf("System zarządzania bohaterami gildii\n");
+    
     
     do {
         menu();
@@ -98,11 +126,20 @@ int main() {
                 break;
 
             case 2:
-                printf("...\n");
+                print_list(head);
                 break;
 
             case 3:
-                printf("...\n");
+                printf("Podaj imię do wyszukania: ");
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
+                Hero* found = find_hero(head, name);
+                if (found != NULL) {
+                    printf("Znaleziono: %s | Rasa: %s | Klasa: %s | Poziom: %d | Reputacja: %d | Status: %s\n",
+                           found->name, found->race, found->class, found->level, found->reputation, found->status);
+                } else {
+                    printf("Nie znaleziono bohatera o imieniu '%s'\n", name);
+                }
                 break;
 
             case 4:
