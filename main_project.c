@@ -76,6 +76,43 @@ Hero* find_hero(Hero* head, const char* name) {
     return NULL;
 }
 
+//usuwanie bohatera (!jeśli nie jest na misji)
+Hero* delete_hero(Hero* head, const char* name) {
+    if (head == NULL) return NULL;
+
+    //sprawdzenie istnienia bohaterf i czy jest na misji
+    Hero* to_delete = find_hero(head, name);
+    if (to_delete == NULL) {
+        printf("Bohater o imieniu '%s' nie istnieje.\n", name);
+        return head;
+    }
+    if (strcmp(to_delete->status, "na misji") == 0) {
+        printf("Nie można usunąć bohatera '%s' – jest na misji!\n", name);
+        return head;
+    }
+
+    //usuwanie pierwszego elementu
+    if (strcmp(head->name, name) == 0) {
+        Hero* new_head = head->next;
+        free(head);
+        printf("Usunięto bohatera: %s\n", name);
+        return new_head;
+    }
+
+    //usuwanie elementu ze środka/końca
+    Hero* temp = head;
+    while (temp->next != NULL && strcmp(temp->next->name, name) != 0) {
+        temp = temp->next;
+    }
+    if (temp->next != NULL) {
+        Hero* next_next = temp->next->next;
+        free(temp->next);
+        temp->next = next_next;
+        printf("Usunięto bohatera: %s\n", name);
+    }
+    return head;
+}
+
 //menu
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
@@ -143,7 +180,10 @@ int main() {
                 break;
 
             case 4:
-                printf("...\n");
+                printf("Podaj imię bohatera do usunięcia: ");
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
+                head = delete_hero(head, name);
                 break;
 
             case 5:
