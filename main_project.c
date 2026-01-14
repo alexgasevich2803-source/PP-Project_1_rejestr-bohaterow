@@ -113,6 +113,45 @@ Hero* delete_hero(Hero* head, const char* name) {
     return head;
 }
 
+//zapisanie listy  do pliku tekstowego
+void save_to_file(Hero* head, const char* filename) {
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Nie można otworzyć pliku do zapisu.\n");
+        return;
+    }
+    Hero* temp = head;
+    while (temp != NULL) {
+        fprintf(file, "%s;%s;%s;%d;%d;%s\n",
+                temp->name, temp->race, temp->class,
+                temp->level, temp->reputation, temp->status);
+        temp = temp->next;
+    }
+    fclose(file);
+    printf("Zapisano rejestr do pliku: %s\n", filename);
+}
+
+//wczytanie listy z pliku
+Hero* load_from_file(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Nie można otworzyć pliku do odczytu.\n");
+        return NULL;
+    }
+    Hero* head = NULL;
+    char line[300];
+    while (fgets(line, sizeof(line), file)) {
+        char name[100], race[50], class[50], status[50];
+        int level, reputation;
+        sscanf(line, "%[^;];%[^;];%[^;];%d;%d;%[^\n]",
+               name, race, class, &level, &reputation, status);
+        head = push_back(head, name, race, class, level, reputation, status);
+    }
+    fclose(file);
+    printf("Wczytano rejestr z pliku: %s\n", filename);
+    return head;
+}
+
 //menu
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
@@ -120,7 +159,9 @@ void menu() {
     printf("2. Wyświetl wszystkich\n");
     printf("3. Wyszukaj bohatera\n");
     printf("4. Usuń bohatera\n");
-    printf("5. Wyjście\n");
+    printf("5. Zapisz do pliku\n");
+    printf("6. Wczytaj z pliku\n");
+    printf("7. Wyjście\n");
     printf("Wybierz opcję: ");
 }
 
@@ -129,9 +170,7 @@ int main() {
     int choice;
     char name[100], race[50], class[50], status[50];
     int level, reputation;
-
-    printf("=== REJESTR BOHATERÓW GILDII ===\n");
-    
+    char filename[100];
     
     do {
         menu();
@@ -187,6 +226,20 @@ int main() {
                 break;
 
             case 5:
+                printf("Podaj nazwę pliku do zapisu: ");
+                fgets(filename, sizeof(filename), stdin);
+                filename[strcspn(filename, "\n")] = 0;
+                save_to_file(head, filename);
+                break;
+
+            case 6:
+                printf("Podaj nazwę pliku do odczytu: ");
+                fgets(filename, sizeof(filename), stdin);
+                filename[strcspn(filename, "\n")] = 0;
+                head = load_from_file(filename);
+                break;
+
+            case 7:
                 printf("Zamykanie programu...\n");
                 break;
 
@@ -194,7 +247,8 @@ int main() {
                 printf("Nieprawidłowa opcja!\n");
                 break;
         }
-    } while (choice != 5);
+        
+    } while (choice != 7);
 
     printf("Pamięć zwolniona.\n");
     return 0;
