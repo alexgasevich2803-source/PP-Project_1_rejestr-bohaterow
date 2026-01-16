@@ -152,6 +152,17 @@ Hero* load_from_file(const char* filename) {
     return head;
 }
 
+//zwolnienie listy
+void free_list(Hero* head) {
+    Hero* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+    printf("Pamięć zwolniona.\n");
+}
+
 //menu
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
@@ -171,11 +182,11 @@ int main() {
     char name[100], race[50], class[50], status[50];
     int level, reputation;
     char filename[100];
-    
+
     do {
         menu();
         scanf("%d", &choice);
-        getchar(); // usunięcie z naku nowej linii
+        getchar();
 
         switch (choice) {
             case 1:
@@ -236,6 +247,7 @@ int main() {
                 printf("Podaj nazwę pliku do odczytu: ");
                 fgets(filename, sizeof(filename), stdin);
                 filename[strcspn(filename, "\n")] = 0;
+                free_list(head); //zwolnienie listy przed wczytaniem nowej
                 head = load_from_file(filename);
                 break;
 
@@ -247,9 +259,8 @@ int main() {
                 printf("Nieprawidłowa opcja!\n");
                 break;
         }
-        
     } while (choice != 7);
 
-    printf("Pamięć zwolniona.\n");
+    free_list(head);
     return 0;
 }
