@@ -76,6 +76,11 @@ Hero* find_hero(Hero* head, const char* name) {
     return NULL;
 }
 
+//sprawdzanie unikalnośći imienia
+bool is_name_unique(Hero* head, const char* name) {
+    return find_hero(head, name) == NULL;
+}
+
 //usuwanie bohatera (!jeśli nie jest na misji)
 Hero* delete_hero(Hero* head, const char* name) {
     if (head == NULL) return NULL;
@@ -193,6 +198,11 @@ int main() {
                 printf("Imię: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
+                //unikalnośc imienia
+                if (!is_name_unique(head, name)) {
+                    printf("Błąd: Bohater '%s' już istnieje.\n", name);
+                    break;
+                }
                 printf("Rasa: ");
                 fgets(race, sizeof(race), stdin);
                 race[strcspn(race, "\n")] = 0;
