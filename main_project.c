@@ -76,6 +76,64 @@ Hero* find_hero(Hero* head, const char* name) {
     return NULL;
 }
 
+//modyfikacja bohatera
+void modify_hero(Hero* hero) {
+    if (hero == NULL) {
+        printf("Błąd: bohater nie istnieje!\n");
+        return;
+    }
+    char input[100];
+    printf("\n Modyfikacja bohatera: %s\n", hero->name);
+
+    
+    printf("Aktualna rasa: %s\n", hero->race);
+    printf("Nowa rasa (Enter aby zachować obecną): ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    if (strlen(input) > 0) {
+        strcpy(hero->race, input);
+    }
+
+    printf("Aktualna klasa: %s\n", hero->class);
+    printf("Nowa klasa: ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    if (strlen(input) > 0) {
+        strcpy(hero->class, input);
+    }
+    
+    printf("Aktualny poziom: %d\n", hero->level);
+    printf("Nowy poziom: ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    if (strlen(input) > 0) {
+        hero->level = atoi(input);
+    }
+    
+    printf("Aktualna reputacja: %d\n", hero->reputation);
+    printf("Nowa reputacja (0-100): ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    if (strlen(input) > 0) {
+        int new_reputation = atoi(input);
+        if (new_reputation >= 0 && new_reputation <= 100) {
+            hero->reputation = new_reputation;
+        } else {
+            printf("Błąd wartośći reputacji.);
+        }
+    }
+    
+    printf("Aktualny status: %s\n", hero->status);
+    printf("Nowy status (aktywny/na misji/ranny/zaginiony/zawieszony): ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    if (strlen(input) > 0) {
+        strcpy(hero->status, input);
+    }
+    
+    printf("Dane bohatera zostały zaktualizowane!\n");
+}
+
 //sprawdzanie unikalnośći imienia
 bool is_name_unique(Hero* head, const char* name) {
     return find_hero(head, name) == NULL;
@@ -85,12 +143,13 @@ bool is_name_unique(Hero* head, const char* name) {
 Hero* delete_hero(Hero* head, const char* name) {
     if (head == NULL) return NULL;
 
-    //sprawdzenie istnienia bohaterf i czy jest na misji
+    //sprawdzenie istnienia bohatera
     Hero* to_delete = find_hero(head, name);
     if (to_delete == NULL) {
         printf("Bohater o imieniu '%s' nie istnieje.\n", name);
         return head;
     }
+    //czy jest na misji
     if (strcmp(to_delete->status, "na misji") == 0) {
         printf("Nie można usunąć bohatera '%s' – jest na misji!\n", name);
         return head;
@@ -118,7 +177,7 @@ Hero* delete_hero(Hero* head, const char* name) {
     return head;
 }
 
-//zapisanie listy  do pliku tekstowego
+//zapisanie listy do pliku tekstowego
 void save_to_file(Hero* head, const char* filename) {
     FILE* file = fopen(filename, "w");
     if (file == NULL) {
@@ -174,10 +233,11 @@ void menu() {
     printf("1. Dodaj bohatera\n");
     printf("2. Wyświetl wszystkich\n");
     printf("3. Wyszukaj bohatera\n");
-    printf("4. Usuń bohatera\n");
-    printf("5. Zapisz do pliku\n");
-    printf("6. Wczytaj z pliku\n");
-    printf("7. Wyjście\n");
+    printf("4. Modyfikuj bohatera\n");
+    printf("5. Usuń bohatera\n");
+    printf("6. Zapisz do pliku\n");
+    printf("7. Wczytaj z pliku\n");
+    printf("8. Wyjście\n");
     printf("Wybierz opcję: ");
 }
 
@@ -240,20 +300,34 @@ int main() {
                 break;
 
             case 4:
+                printf("Podaj imię bohatera do modyfikacji: ");
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
+
+                Hero* to_modify = find_hero(head, name);
+                if (to_modify != NULL) {
+                    modify_hero(to_modify);
+                } else {
+                    printf("Nie znaleziono bohatera '%s'\n", name);
+                }
+                break;
+                    
+            
+            case 5:
                 printf("Podaj imię bohatera do usunięcia: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
                 head = delete_hero(head, name);
                 break;
 
-            case 5:
+            case 6:
                 printf("Podaj nazwę pliku do zapisu: ");
                 fgets(filename, sizeof(filename), stdin);
                 filename[strcspn(filename, "\n")] = 0;
                 save_to_file(head, filename);
                 break;
 
-            case 6:
+            case 7:
                 printf("Podaj nazwę pliku do odczytu: ");
                 fgets(filename, sizeof(filename), stdin);
                 filename[strcspn(filename, "\n")] = 0;
@@ -261,7 +335,7 @@ int main() {
                 head = load_from_file(filename);
                 break;
 
-            case 7:
+            case 8:
                 printf("Zamykanie programu...\n");
                 break;
 
@@ -269,7 +343,7 @@ int main() {
                 printf("Nieprawidłowa opcja!\n");
                 break;
         }
-    } while (choice != 7);
+    } while (choice != 8);
 
     free_list(head);
     return 0;
