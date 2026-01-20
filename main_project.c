@@ -119,7 +119,7 @@ void modify_hero(Hero* hero) {
         if (new_reputation >= 0 && new_reputation <= 100) {
             hero->reputation = new_reputation;
         } else {
-            printf("Błąd wartośći reputacji.);
+            printf("Błąd wartośći reputacji.");
         }
     }
     
