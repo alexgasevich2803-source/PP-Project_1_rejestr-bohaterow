@@ -16,7 +16,7 @@ typedef struct Hero {
 
 //tworzenie nowego bohatera
 Hero* create_hero(const char* name, const char* race, const char* class, int level, int reputation, const char* status) {
-    Hero* new_hero = (Hero*)calloc(1, sizeof(Hero));
+    Hero* new_hero = (Hero*)calloc(1, sizeof(Hero)); 
     if (new_hero == NULL) {
         printf("Błąd alokacji pamięci!\n");
         return NULL;
@@ -40,7 +40,7 @@ Hero* push_back(Hero* head, const char* name, const char* race, const char* clas
         return new_hero;
     }
 
-    Hero* temp = head;
+    Hero* temp = head; 
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -151,7 +151,7 @@ Hero* delete_hero(Hero* head, const char* name) {
     }
     //czy jest na misji
     if (strcmp(to_delete->status, "na misji") == 0) {
-        printf("Nie można usunąć bohatera '%s' – jest na misji!\n", name);
+        printf("Nie można usunąć bohatera '%s' - jest na misji!\n", name);
         return head;
     }
 
@@ -204,13 +204,17 @@ Hero* load_from_file(const char* filename) {
     }
     Hero* head = NULL;
     char line[300];
+    
     while (fgets(line, sizeof(line), file)) {
         char name[100], race[50], class[50], status[50];
         int level, reputation;
-        sscanf(line, "%[^;];%[^;];%[^;];%d;%d;%[^\n]",
-               name, race, class, &level, &reputation, status);
-        head = push_back(head, name, race, class, level, reputation, status);
+        
+        if (sscanf(line, "%99[^;];%49[^;];%49[^;];%d;%d;%49s",
+                  name, race, class, &level, &reputation, status) >= 5) {
+            head = push_back(head, name, race, class, level, reputation, status); 
+        }
     }
+    
     fclose(file);
     printf("Wczytano rejestr z pliku: %s\n", filename);
     return head;
@@ -258,7 +262,6 @@ int main() {
                 printf("Imię: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
-                //unikalnośc imienia
                 if (!is_name_unique(head, name)) {
                     printf("Błąd: Bohater '%s' już istnieje.\n", name);
                     break;
@@ -331,7 +334,7 @@ int main() {
                 printf("Podaj nazwę pliku do odczytu: ");
                 fgets(filename, sizeof(filename), stdin);
                 filename[strcspn(filename, "\n")] = 0;
-                free_list(head); //zwolnienie listy przed wczytaniem nowej
+                free_list(head);
                 head = load_from_file(filename);
                 break;
 
