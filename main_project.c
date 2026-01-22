@@ -276,6 +276,11 @@ int main() {
                 scanf("%d", &level);
                 printf("Reputacja (0-100): ");
                 scanf("%d", &reputation);
+                while (reputation < 0 || reputation > 100) {
+                    printf("Błąd: Reputacja musi byc w zakresie 0-100!\n");
+                    printf("Reputacja: ");
+                    scanf("%d", &reputation);
+                }
                 getchar();
                 printf("Status (aktywny/na misji/ranny/zaginiony/zawieszony): ");
                 fgets(status, sizeof(status), stdin);
