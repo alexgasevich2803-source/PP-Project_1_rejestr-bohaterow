@@ -3,18 +3,18 @@
 #include <string.h>
 #include <stdbool.h>
 
-//struktura bohatera
+
 typedef struct Hero {
-    char name[100];          //imię
-    char race[50];           //rasa
-    char class[50];          //klasa
-    int level;               //poziom doświadczenia
-    int reputation;          //reputacja (0-100)
-    char status[50];         //status
-    struct Hero* next;       //wskaźnik na następny element listy
+    char name[100];          
+    char race[50];           
+    char class[50];          
+    int level;               
+    int reputation;          
+    char status[50];         
+    struct Hero* next;       
 } Hero;
 
-//tworzenie nowego bohatera
+
 Hero* create_hero(const char* name, const char* race, const char* class, int level, int reputation, const char* status) {
     Hero* new_hero = (Hero*)calloc(1, sizeof(Hero)); 
     if (new_hero == NULL) {
@@ -31,7 +31,7 @@ Hero* create_hero(const char* name, const char* race, const char* class, int lev
     return new_hero;
 }
 
-//dodanie bohatera na koniec listy
+
 Hero* push_back(Hero* head, const char* name, const char* race, const char* class, int level, int reputation, const char* status) {
     Hero* new_hero = create_hero(name, race, class, level, reputation, status);
     if (new_hero == NULL) return head;
@@ -48,7 +48,7 @@ Hero* push_back(Hero* head, const char* name, const char* race, const char* clas
     return head;
 }
 
-//wypisywanie wszystkich bohaterów
+
 void print_list(Hero* head) {
     if (head == NULL) {
         printf("Rejestr jest pusty.\n");
@@ -64,7 +64,7 @@ void print_list(Hero* head) {
     printf("\n");
 }
 
-//wyszukiwanie bohatera po imieniu
+
 Hero* find_hero(Hero* head, const char* name) {
     Hero* temp = head;
     while (temp != NULL) {
@@ -76,7 +76,7 @@ Hero* find_hero(Hero* head, const char* name) {
     return NULL;
 }
 
-//modyfikacja bohatera
+
 void modify_hero(Hero* hero) {
     if (hero == NULL) {
         printf("Błąd: bohater nie istnieje!\n");
@@ -134,28 +134,28 @@ void modify_hero(Hero* hero) {
     printf("Dane bohatera zostały zaktualizowane!\n");
 }
 
-//sprawdzanie unikalnośći imienia
+
 bool is_name_unique(Hero* head, const char* name) {
     return find_hero(head, name) == NULL;
 }
 
-//usuwanie bohatera (!jeśli nie jest na misji)
+
 Hero* delete_hero(Hero* head, const char* name) {
     if (head == NULL) return NULL;
 
-    //sprawdzenie istnienia bohatera
+    
     Hero* to_delete = find_hero(head, name);
     if (to_delete == NULL) {
         printf("Bohater o imieniu '%s' nie istnieje.\n", name);
         return head;
     }
-    //czy jest na misji
+    
     if (strcmp(to_delete->status, "na misji") == 0) {
         printf("Nie można usunąć bohatera '%s' - jest na misji!\n", name);
         return head;
     }
 
-    //usuwanie pierwszego elementu
+    
     if (strcmp(head->name, name) == 0) {
         Hero* new_head = head->next;
         free(head);
@@ -163,7 +163,7 @@ Hero* delete_hero(Hero* head, const char* name) {
         return new_head;
     }
 
-    //usuwanie elementu ze środka/końca
+    
     Hero* temp = head;
     while (temp->next != NULL && strcmp(temp->next->name, name) != 0) {
         temp = temp->next;
@@ -177,7 +177,7 @@ Hero* delete_hero(Hero* head, const char* name) {
     return head;
 }
 
-//zapisanie listy do pliku tekstowego
+
 void save_to_file(Hero* head, const char* filename) {
     FILE* file = fopen(filename, "w");
     if (file == NULL) {
@@ -195,7 +195,7 @@ void save_to_file(Hero* head, const char* filename) {
     printf("Zapisano rejestr do pliku: %s\n", filename);
 }
 
-//wczytanie listy z pliku
+
 Hero* load_from_file(const char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -220,7 +220,7 @@ Hero* load_from_file(const char* filename) {
     return head;
 }
 
-//zwolnienie listy
+
 void free_list(Hero* head) {
     Hero* temp;
     while (head != NULL) {
@@ -231,7 +231,7 @@ void free_list(Hero* head) {
     printf("Pamięć zwolniona.\n");
 }
 
-//menu
+
 void menu() {
     printf("\n=== REJESTR BOHATERÓW GILDII ===\n");
     printf("1. Dodaj bohatera\n");
@@ -255,14 +255,14 @@ int main() {
     do {
         menu();
         scanf("%d", &choice);
-        getchar();
+        getchar(); 
 
         switch (choice) {
             case 1:
                 printf("Imię: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = 0;
-                if (!is_name_unique(head, name)) {
+                if (!is_name_unique(head, name)) { 
                     printf("Błąd: Bohater '%s' już istnieje.\n", name);
                     break;
                 }
@@ -339,7 +339,7 @@ int main() {
                 printf("Podaj nazwę pliku do odczytu: ");
                 fgets(filename, sizeof(filename), stdin);
                 filename[strcspn(filename, "\n")] = 0;
-                free_list(head);
+                free_list(head); 
                 head = load_from_file(filename);
                 break;
 
