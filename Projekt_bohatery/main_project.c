@@ -434,3 +434,4 @@ int main() {
     free_list(head);
     return 0;
 }
+// Dodano komentarze Doxygen dla funkcji
