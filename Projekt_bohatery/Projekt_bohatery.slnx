@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Projekt_bohatery.vcxproj" Id="955ae67f-096c-4876-b553-4a8c04cff140" />
+</Solution>
